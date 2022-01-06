@@ -7,6 +7,9 @@ import Bookmarks from '../../assets/buttons/bookmark.svg';
 import Lists from '../../assets/buttons/list.svg';
 import Profile from '../../assets/buttons/profile.svg';
 import More from '../../assets/buttons/more.svg';
+import Toggle from '../../assets/buttons/usertoggle.svg';
+import Photo from '../../assets/profile.jpg';
+
 import {
   Header,
   NavContainer,
@@ -18,6 +21,12 @@ import {
   LogoLink,
   TweetButton,
   TweetText,
+  User,
+  UserPhoto,
+  UserText,
+  UserName,
+  UserHandle,
+  UserToggle,
 } from './style';
 import { Button } from '../MenuButton';
 
@@ -53,7 +62,18 @@ export const Sidebar = () => {
             </TweetButton>
           </TweetContainer>
         </NavContainer>
-        <UserContainer>User</UserContainer>
+        <UserContainer>
+          <User>
+            <UserPhoto src={Photo} />
+            <UserText>
+              <UserName>Kinji</UserName>
+              <UserHandle>@Kinji</UserHandle>
+            </UserText>
+            <UserToggle>
+              <img src={Toggle} alt="toggle" height="18.75px" />
+            </UserToggle>
+          </User>
+        </UserContainer>
       </MenuContainer>
     </Header>
   );

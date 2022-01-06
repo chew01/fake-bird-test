@@ -24,8 +24,6 @@ export const NavContainer = styled.div`
   align-items: start;
 `;
 
-export const UserContainer = styled.div``;
-
 export const LogoContainer = styled.div`
   padding: 2px 0px;
 `;
@@ -79,4 +77,60 @@ export const TweetText = styled.div`
   font-family: 'TwitterChirp';
   font-weight: 700;
   font-size: 17px;
+`;
+
+export const UserContainer = styled.div`
+  margin: 12px 0px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+`;
+
+export const User = styled.div`
+  padding: 12px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  box-sizing: border-box;
+  border-radius: 9999px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: rgba(15, 20, 25, 0.1);
+  }
+`;
+
+export const UserPhoto = styled.img`
+  border-radius: 9999px;
+`;
+
+export const UserText = styled.div`
+  flex: 1 1 auto;
+  margin: 0px 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+`;
+
+export const UserName = styled.div`
+  font-family: 'TwitterChirp';
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 20px;
+  color: rgb(15, 20, 25);
+`;
+
+export const UserHandle = styled.div`
+  font-family: 'TwitterChirp';
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 20px;
+  color: rgb(83, 100, 113);
+`;
+
+export const UserToggle = styled.div`
+  flex: 1 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
 `;

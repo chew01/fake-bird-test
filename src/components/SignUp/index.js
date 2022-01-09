@@ -1,4 +1,7 @@
+import { useState } from 'react';
 import styled from 'styled-components';
+import { signUp } from '../../api/auth';
+import { FormInput } from '../FormInput';
 
 const SignUpContainer = styled.div`
   flex: 1 1 auto;
@@ -14,7 +17,7 @@ const FormContainer = styled.div`
   flex-direction: column;
   align-items: stretch;
 `;
-const Form = styled.div`
+const Form = styled.form`
   margin: 0px 32px;
   display: flex;
   flex-direction: column;
@@ -28,41 +31,6 @@ const Title = styled.div`
   font-weight: 700;
   line-height: 28px;
   color: rgb(15, 20, 25);
-`;
-const Box = styled.div`
-  padding: 12px 0px;
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-`;
-const Label = styled.label`
-  border: 1px solid;
-  border-radius: 4px;
-  border-color: rgb(207, 217, 222);
-
-  &:focus-within {
-    border-color: rgb(29, 155, 240);
-    box-shadow: rgb(29, 155, 240) 0px 0px 0px 1px;
-  }
-`;
-const InputTitle = styled.div`
-  font-family: 'TwitterChirp';
-  font-size: 13px;
-  font-weight: 400;
-  line-height: 16px;
-  color: rgb(29, 155, 240);
-  padding: 8px 0px 0px 8px;
-`;
-const Input = styled.input`
-  width: 100%;
-  font-family: 'TwitterChirp';
-  font-size: 17px;
-  font-weight: 400;
-  color: rgb(15, 20, 25);
-  box-sizing: border-box;
-  padding: 8px;
-  border: none;
-  outline-style: none;
 `;
 const ButtonContainer = styled.div`
   padding: 12px 32px 36px 32px;
@@ -88,39 +56,48 @@ const Button = styled.div`
 `;
 
 export const SignUp = () => {
+  const [nameInput, setNameInput] = useState('');
+  const [userInput, setUserInput] = useState('');
+  const [emailInput, setEmailInput] = useState('');
+  const [passInput, setPassInput] = useState('');
+
+  const handleName = (e) => {
+    setNameInput(e.target.value);
+  };
+  const handleUser = (e) => {
+    setUserInput(e.target.value);
+  };
+  const handleEmail = (e) => {
+    setEmailInput(e.target.value);
+  };
+  const handlePass = (e) => {
+    setPassInput(e.target.value);
+  };
+  const handleSubmit = async () => {
+    if (
+      nameInput === '' ||
+      userInput === '' ||
+      emailInput === '' ||
+      passInput === ''
+    ) {
+      throw new Error('no blanks allowed!');
+    }
+    await signUp(nameInput, userInput, emailInput, passInput);
+  };
+
   return (
     <SignUpContainer>
       <FormContainer>
         <Form>
           <Title>Create your account</Title>
-          <Box>
-            <Label>
-              <InputTitle>Name</InputTitle>
-              <Input type="text" />
-            </Label>
-          </Box>
-          <Box>
-            <Label>
-              <InputTitle>Username</InputTitle>
-              <Input type="text" />
-            </Label>
-          </Box>
-          <Box>
-            <Label>
-              <InputTitle>Email</InputTitle>
-              <Input type="text" />
-            </Label>
-          </Box>
-          <Box>
-            <Label>
-              <InputTitle>Password</InputTitle>
-              <Input type="text" />
-            </Label>
-          </Box>
+          <FormInput title="Name" type="text" onChange={handleName} />
+          <FormInput title="Username" type="text" onChange={handleUser} />
+          <FormInput title="Email" type="email" onChange={handleEmail} />
+          <FormInput title="Password" type="password" onChange={handlePass} />
         </Form>
       </FormContainer>
       <ButtonContainer>
-        <Button>Next</Button>
+        <Button onClick={handleSubmit}>Next</Button>
       </ButtonContainer>
     </SignUpContainer>
   );

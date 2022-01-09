@@ -15,6 +15,7 @@ const ButtonContents = styled.div`
   justify-content: center;
   align-items: center;
   border-radius: 9999px;
+  transition-duration: 0.2s;
 
   &:hover {
     background-color: rgba(15, 20, 25, 0.1);

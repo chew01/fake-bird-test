@@ -48,6 +48,7 @@ export const LogoLink = styled.a`
   display: flex;
   align-items: center;
   border-radius: 9999px;
+  transition-duration: 0.2s;
 
   &:hover {
     background-color: rgba(29, 155, 240, 0.1);
@@ -66,6 +67,7 @@ export const TweetButton = styled.a`
   padding: 0px 32px;
   box-shadow: rgb(0 0 0 / 8%) 0px 8px 28px;
   text-decoration: none;
+  transition-duration: 0.2s;
 
   &:hover {
     background-color: rgb(26, 140, 216);
@@ -94,6 +96,7 @@ export const User = styled.div`
   box-sizing: border-box;
   border-radius: 9999px;
   cursor: pointer;
+  transition-duration: 0.2s;
 
   &:hover {
     background-color: rgba(15, 20, 25, 0.1);
@@ -133,4 +136,35 @@ export const UserToggle = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-end;
+`;
+
+export const UserMenuContainer = styled.div`
+  padding: 12px 0px;
+  width: 300px;
+  min-height: 30px;
+  max-height: 480px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  background-color: white;
+  box-shadow: rgb(101 119 134 / 20%) 0px 0px 15px,
+    rgb(101 119 134 / 15%) 0px 0px 3px 1px;
+  border-radius: 16px;
+`;
+
+export const Logout = styled.div`
+  display: flex;
+  padding: 16px;
+  width: 300px;
+  box-sizing: border-box;
+  font-family: 'TwitterChirp';
+  font-size: 15px;
+  font-weight: 400;
+  transition-duration: 0.2s;
+  cursor: pointer;
+  color: rgb(15, 20, 25);
+
+  &:hover {
+    background-color: rgb(247, 249, 249);
+  }
 `;

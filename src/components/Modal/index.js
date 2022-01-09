@@ -80,6 +80,7 @@ const ModalHeaderClose = styled.div`
   align-items: center;
   border-radius: 9999px;
   cursor: pointer;
+  transition-duration: 0.2s;
 
   &:hover {
     background-color: rgba(15, 20, 25, 0.1);
@@ -89,7 +90,6 @@ const Cross = styled.img`
   height: 20px;
   width: 20px;
 `;
-const ModalBody = styled.div``;
 
 export const Modal = () => {
   const navigate = useNavigate();

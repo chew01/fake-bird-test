@@ -8,7 +8,6 @@ import Lists from '../../assets/buttons/list.svg';
 import Profile from '../../assets/buttons/profile.svg';
 import More from '../../assets/buttons/more.svg';
 import Toggle from '../../assets/buttons/usertoggle.svg';
-import Photo from '../../assets/profile.jpg';
 
 import {
   Header,
@@ -27,10 +26,26 @@ import {
   UserName,
   UserHandle,
   UserToggle,
+  UserMenuContainer,
+  Logout,
 } from './style';
 import { Button } from '../MenuButton';
+import { useSelector } from 'react-redux';
+import { useState } from 'react';
+import { logOut } from '../../api/auth';
 
 export const Sidebar = () => {
+  const [displayUserMenu, setDisplayUserMenu] = useState(false);
+  const user = useSelector((state) => state.user);
+
+  const toggleUserMenu = () => {
+    if (displayUserMenu) {
+      setDisplayUserMenu(false);
+    } else {
+      setDisplayUserMenu(true);
+    }
+  };
+
   return (
     <Header>
       <MenuContainer>
@@ -63,11 +78,12 @@ export const Sidebar = () => {
           </TweetContainer>
         </NavContainer>
         <UserContainer>
-          <User>
-            <UserPhoto src={Photo} />
+          {displayUserMenu ? <UserMenu /> : null}
+          <User onClick={toggleUserMenu}>
+            <UserPhoto src={user.photoURL} height={'40px'} />
             <UserText>
-              <UserName>Kinji</UserName>
-              <UserHandle>@Kinji</UserHandle>
+              <UserName>{user.name}</UserName>
+              <UserHandle>{user.user}</UserHandle>
             </UserText>
             <UserToggle>
               <img src={Toggle} alt="toggle" height="18.75px" />
@@ -76,5 +92,13 @@ export const Sidebar = () => {
         </UserContainer>
       </MenuContainer>
     </Header>
+  );
+};
+
+const UserMenu = () => {
+  return (
+    <UserMenuContainer>
+      <Logout onClick={logOut}>Log out user</Logout>
+    </UserMenuContainer>
   );
 };

@@ -8,6 +8,7 @@ import Lists from '../../assets/buttons/list.svg';
 import Profile from '../../assets/buttons/profile.svg';
 import More from '../../assets/buttons/more.svg';
 import Toggle from '../../assets/buttons/usertoggle.svg';
+import defaultPhoto from '../../assets/defaultPhoto.png';
 
 import {
   Header,
@@ -30,13 +31,15 @@ import {
   Logout,
 } from './style';
 import { Button } from '../MenuButton';
-import { useSelector } from 'react-redux';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { logOut } from '../../api/auth';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { getUserData } from '../../api/database';
 
 export const Sidebar = () => {
   const [displayUserMenu, setDisplayUserMenu] = useState(false);
-  const user = useSelector((state) => state.user);
+  const [user, setUser] = useState({});
+  const [loggedIn, setLoggedIn] = useState(false);
 
   const toggleUserMenu = () => {
     if (displayUserMenu) {
@@ -45,6 +48,32 @@ export const Sidebar = () => {
       setDisplayUserMenu(true);
     }
   };
+
+  const handleLogOut = () => {
+    logOut();
+    setDisplayUserMenu(false);
+    setLoggedIn(false);
+  };
+
+  useEffect(() => {
+    const auth = getAuth();
+    const user = {};
+    onAuthStateChanged(auth, (cred) => {
+      if (cred) {
+        if (cred.photoURL) {
+          user.photoURL = cred.photoURL;
+        } else user.photoURL = defaultPhoto;
+
+        const uid = cred.uid;
+        getUserData(uid).then((obj) => {
+          user.name = obj.name;
+          user.user = `@${obj.user}`;
+          setUser(user);
+          setLoggedIn(true);
+        });
+      } else console.log('not logged in');
+    });
+  }, []);
 
   return (
     <Header>
@@ -57,48 +86,58 @@ export const Sidebar = () => {
           </LogoContainer>
           <ButtonContainer>
             <nav>
-              <Button to="/home" text="Home" img={Home} />
+              {loggedIn ? <Button to="/home" text="Home" img={Home} /> : null}
               <Button to="/explore" text="Explore" img={Explore} />
-              <Button
-                to="/notifications"
-                text="Notifications"
-                img={Notifications}
-              />
-              <Button to="/messages" text="Messages" img={Messages} />
-              <Button to="/i/bookmarks" text="Bookmarks" img={Bookmarks} />
-              <Button to="/lists" text="Lists" img={Lists} />
-              <Button to="/profile" text="Profile" img={Profile} />
-              <Button to="/more" text="More" img={More} />
+              {loggedIn ? (
+                <Button
+                  to="/notifications"
+                  text="Notifications"
+                  img={Notifications}
+                />
+              ) : null}
+              {loggedIn ? (
+                <Button to="/messages" text="Messages" img={Messages} />
+              ) : null}
+              {loggedIn ? (
+                <Button to="/i/bookmarks" text="Bookmarks" img={Bookmarks} />
+              ) : null}
+              {loggedIn ? (
+                <Button to="/lists" text="Lists" img={Lists} />
+              ) : null}
+              {loggedIn ? (
+                <Button to="/profile" text="Profile" img={Profile} />
+              ) : null}
+              {loggedIn ? <Button to="/more" text="More" img={More} /> : null}
             </nav>
           </ButtonContainer>
-          <TweetContainer>
-            <TweetButton href="/compose/tweet">
-              <TweetText>Tweet</TweetText>
-            </TweetButton>
-          </TweetContainer>
+          {loggedIn ? (
+            <TweetContainer>
+              <TweetButton href="/compose/tweet">
+                <TweetText>Tweet</TweetText>
+              </TweetButton>
+            </TweetContainer>
+          ) : null}
         </NavContainer>
-        <UserContainer>
-          {displayUserMenu ? <UserMenu /> : null}
-          <User onClick={toggleUserMenu}>
-            <UserPhoto src={user.photoURL} height={'40px'} />
-            <UserText>
-              <UserName>{user.name}</UserName>
-              <UserHandle>{user.user}</UserHandle>
-            </UserText>
-            <UserToggle>
-              <img src={Toggle} alt="toggle" height="18.75px" />
-            </UserToggle>
-          </User>
-        </UserContainer>
+        {loggedIn ? (
+          <UserContainer>
+            {displayUserMenu ? (
+              <UserMenuContainer>
+                <Logout onClick={handleLogOut}>Log out user</Logout>
+              </UserMenuContainer>
+            ) : null}
+            <User onClick={toggleUserMenu}>
+              <UserPhoto src={user.photoURL} height={'40px'} />
+              <UserText>
+                <UserName>{user.name}</UserName>
+                <UserHandle>{user.user}</UserHandle>
+              </UserText>
+              <UserToggle>
+                <img src={Toggle} alt="toggle" height="18.75px" />
+              </UserToggle>
+            </User>
+          </UserContainer>
+        ) : null}
       </MenuContainer>
     </Header>
-  );
-};
-
-const UserMenu = () => {
-  return (
-    <UserMenuContainer>
-      <Logout onClick={logOut}>Log out user</Logout>
-    </UserMenuContainer>
   );
 };

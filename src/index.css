@@ -12,6 +12,13 @@
   font-style: normal;
 }
 
+@font-face {
+  font-family: 'TwitterChirpExtendedHeavy';
+  src: url('./assets/fonts/chirp-extended-heavy-web.woff') format('woff');
+  font-weight: 700;
+  font-style: normal;
+}
+
 html,
 body {
   height: 100%;

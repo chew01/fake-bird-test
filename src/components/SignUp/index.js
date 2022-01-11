@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { signUp } from '../../api/auth';
 import { FormInput } from '../FormInput';
@@ -60,6 +61,7 @@ export const SignUp = () => {
   const [userInput, setUserInput] = useState('');
   const [emailInput, setEmailInput] = useState('');
   const [passInput, setPassInput] = useState('');
+  const navigate = useNavigate();
 
   const handleName = (e) => {
     setNameInput(e.target.value);
@@ -83,6 +85,7 @@ export const SignUp = () => {
       throw new Error('no blanks allowed!');
     }
     await signUp(nameInput, userInput, emailInput, passInput);
+    navigate('/');
   };
 
   return (

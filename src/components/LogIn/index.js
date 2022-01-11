@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import { useState } from 'react';
 import { FormInput } from '../FormInput';
 import { logIn } from '../../api/auth';
+import { useNavigate } from 'react-router-dom';
 
 const LogInContainer = styled.div`
   flex: 1 1 auto;
@@ -58,6 +59,7 @@ const Button = styled.div`
 export const LogIn = () => {
   const [emailInput, setEmailInput] = useState('');
   const [passInput, setPassInput] = useState('');
+  const navigate = useNavigate();
 
   const handleEmail = (e) => {
     setEmailInput(e.target.value);
@@ -68,6 +70,7 @@ export const LogIn = () => {
 
   const handleSubmit = async () => {
     await logIn(emailInput, passInput);
+    navigate('/');
   };
 
   return (

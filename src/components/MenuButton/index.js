@@ -1,6 +1,7 @@
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
-const ButtonLink = styled.a`
+const ButtonLink = styled(Link)`
   padding: 4px 0px;
   display: flex;
   flex-direction: column;
@@ -38,7 +39,7 @@ const ButtonLabel = styled.div`
 export const Button = (props) => {
   const { to, text, img } = props;
   return (
-    <ButtonLink href={to}>
+    <ButtonLink to={to}>
       <ButtonContents>
         <ButtonLogo src={img} />
         <ButtonLabel>{text}</ButtonLabel>

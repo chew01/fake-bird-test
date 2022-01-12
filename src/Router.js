@@ -15,12 +15,24 @@ const Default = styled.div`
 
 const AuthRoute = ({ children }) => {
   const user = useContext(AuthContext);
-  return user ? children : <Navigate to="/" />;
+  if (user === undefined) {
+    return null;
+  }
+  if (user != null) {
+    return children;
+  }
+  return <Navigate to="/" />;
 };
 
 const NoAuthRoute = ({ children }) => {
   const user = useContext(AuthContext);
-  return user ? <Navigate to="home" /> : children;
+  if (user === undefined) {
+    return null;
+  }
+  if (user != null) {
+    return <Navigate to="home" />;
+  }
+  return children;
 };
 
 const Router = () => {
@@ -32,6 +44,7 @@ const Router = () => {
       <AuthProvider>
         <Routes location={background || location}>
           <Route
+            exact
             path="/"
             element={
               <NoAuthRoute>

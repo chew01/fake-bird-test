@@ -13,6 +13,13 @@
 }
 
 @font-face {
+  font-family: 'TwitterChirp';
+  src: url('./assets/fonts/chirp-heavy-web.woff') format('woff');
+  font-weight: 800;
+  font-style: normal;
+}
+
+@font-face {
   font-family: 'TwitterChirpExtendedHeavy';
   src: url('./assets/fonts/chirp-extended-heavy-web.woff') format('woff');
   font-weight: 700;

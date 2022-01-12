@@ -5,7 +5,6 @@ export const Header = styled.header`
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  border-right: 1px solid gray;
 `;
 
 export const MenuContainer = styled.div`
@@ -150,6 +149,7 @@ export const UserMenuContainer = styled.div`
   box-shadow: rgb(101 119 134 / 20%) 0px 0px 15px,
     rgb(101 119 134 / 15%) 0px 0px 3px 1px;
   border-radius: 16px;
+  z-index: 1;
 `;
 
 export const Logout = styled.div`

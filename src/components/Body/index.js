@@ -40,6 +40,25 @@ const BodyLeft = styled.div`
   border: 1px solid rgb(239, 243, 244);
 `;
 
+const BodyLeftTitle = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: center;
+  position: sticky;
+  top: -0.5px;
+  z-index: 2;
+  height: 53px;
+  padding: 0px 16px;
+  font-family: 'TwitterChirp';
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 24px;
+  background-color: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  color: rgb(15, 20, 25);
+`;
+
 const BodyRight = styled.div`
   width: 350px;
   display: flex;
@@ -49,12 +68,17 @@ const BodyRight = styled.div`
   margin-right: 10px;
 `;
 
-export const Body = () => {
+export const Body = (props) => {
+  const { type, children } = props;
+
   return (
     <Main>
       <MainContainer>
         <MainSplit>
-          <BodyLeft>Feed</BodyLeft>
+          <BodyLeft>
+            <BodyLeftTitle>{type}</BodyLeftTitle>
+            {children}
+          </BodyLeft>
           <BodyRight>
             <SuggestBar />
           </BodyRight>

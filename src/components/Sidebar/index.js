@@ -8,7 +8,6 @@ import Lists from '../../assets/buttons/list.svg';
 import Profile from '../../assets/buttons/profile.svg';
 import More from '../../assets/buttons/more.svg';
 import Toggle from '../../assets/buttons/usertoggle.svg';
-import defaultPhoto from '../../assets/defaultPhoto.png';
 
 import {
   Header,
@@ -60,14 +59,11 @@ export const Sidebar = () => {
     const user = {};
     onAuthStateChanged(auth, (cred) => {
       if (cred) {
-        if (cred.photoURL) {
-          user.photoURL = cred.photoURL;
-        } else user.photoURL = defaultPhoto;
-
         const uid = cred.uid;
         getUserData(uid).then((obj) => {
           user.name = obj.name;
           user.user = `@${obj.user}`;
+          user.photoURL = obj.photoURL;
           setUser(user);
           setLoggedIn(true);
         });

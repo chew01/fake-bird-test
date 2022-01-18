@@ -8,6 +8,7 @@ import {
 import { doc, setDoc } from 'firebase/firestore';
 import { createContext, useEffect, useState } from 'react';
 import { db } from './database';
+import DefaultPhoto from '../assets/defaultPhoto.png';
 
 export const signUp = async (name, user, email, password) => {
   try {
@@ -18,6 +19,8 @@ export const signUp = async (name, user, email, password) => {
     await setDoc(doc(db, 'users', uid), {
       name,
       user,
+      photoURL: DefaultPhoto,
+      followed: [],
     });
   } catch (error) {
     console.log(error.message);
@@ -50,7 +53,12 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const auth = getAuth();
     onAuthStateChanged(auth, (user) => {
-      setCurrentUser(user);
+      if (user) {
+        const uid = user.uid;
+        setCurrentUser(uid);
+      } else {
+        setCurrentUser(null);
+      }
     });
   }, []);
 

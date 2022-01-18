@@ -1,7 +1,9 @@
-import { useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import DefaultPhoto from '../../assets/defaultPhoto.png';
 import ComposeImage from '../../assets/buttons/composeimage.svg';
+import { createNewTweet, getUserData } from '../../api/database';
+import { AuthContext } from '../../api/auth';
 
 const ComposeContainer = styled.div`
   display: flex;
@@ -151,26 +153,50 @@ const ComposerSubmit = styled.div`
 `;
 
 export const Compose = () => {
+  const uid = useContext(AuthContext);
   const [isEmpty, setIsEmpty] = useState(true);
+  const input = useRef(null);
+  const [draft, setDraft] = useState('');
+  const [photoLink, setPhotoLink] = useState();
 
   const handleChange = (e) => {
+    setDraft(e.target.textContent);
     if (e.target.innerText === '') {
       setIsEmpty(true);
     } else setIsEmpty(false);
   };
 
+  const handleSubmit = async () => {
+    await createNewTweet(uid, draft);
+    setDraft('');
+    input.current.textContent = null;
+    setIsEmpty(true);
+  };
+
+  useEffect(() => {
+    const getPhotoURL = async () => {
+      const user = await getUserData(uid);
+      setPhotoLink(user.photoURL);
+    };
+    getPhotoURL();
+  }, [uid]);
+
   return (
     <ComposeContainer>
       <ComposeContent>
         <ComposerIconContainer>
-          <ComposerIcon src={DefaultPhoto} />
+          <ComposerIcon src={photoLink} />
         </ComposerIconContainer>
         <Composer>
           <ComposerTextContainer>
             {isEmpty ? (
               <ComposerTextBefore>What's happening?</ComposerTextBefore>
             ) : null}
-            <ComposerText contentEditable onInput={handleChange}></ComposerText>
+            <ComposerText
+              contentEditable
+              onInput={handleChange}
+              ref={input}
+            ></ComposerText>
           </ComposerTextContainer>
           <ComposerToolbar>
             <ComposerTools>
@@ -178,7 +204,9 @@ export const Compose = () => {
                 <img src={ComposeImage} alt="Upload" height="20px" />
               </ComposerImageTool>
             </ComposerTools>
-            <ComposerSubmit isEmpty={isEmpty}>Tweet</ComposerSubmit>
+            <ComposerSubmit isEmpty={isEmpty} onClick={handleSubmit}>
+              Tweet
+            </ComposerSubmit>
           </ComposerToolbar>
         </Composer>
       </ComposeContent>

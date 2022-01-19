@@ -6,9 +6,6 @@ import {
   Timestamp,
   collection,
   addDoc,
-  query,
-  where,
-  getDocs,
 } from 'firebase/firestore';
 
 const firebaseConfig = {
@@ -33,44 +30,52 @@ export const getUserData = async (uid) => {
 };
 
 export const createNewTweet = async (originUID, content) => {
-  await addDoc(collection(db, 'users', originUID, 'tweets'), {
+  await addDoc(collection(db, 'tweets'), {
     originUID,
     content,
     time: Timestamp.now(),
   });
 };
 
-const getTweetsForSpecifiedUID = async (uid) => {
-  const q = query(collection(db, 'tweets'), where('originUID', '==', uid));
-  const querySnapshot = await getDocs(q);
-  const tweetsArray = [];
-  querySnapshot.forEach((doc) => {
-    tweetsArray.push(doc.data());
-  });
-  return tweetsArray;
+export const getCurrentTime = async () => {
+  const currentTime = Timestamp.now();
+  return currentTime;
 };
 
-export const getTweetsOfFollowedAndSelf = async (originUID) => {
-  const userData = await getUserData(originUID);
-  // user has array of followed uids
-  const usersToDisplayTweets = userData.followed;
-  // add own uid into that array
-  usersToDisplayTweets.push(originUID);
-  // create an array for eligible tweets
+export const compareTime = (time1, time2) => {
+  const difference = time1.toDate() - time2.toDate();
 
-  const addTweetsToDisplay = async () => {
-    const tweetsOfFollowedUsers = await Promise.all(
-      usersToDisplayTweets.map((uid) => getTweetsForSpecifiedUID(uid))
-    );
-    const tweetsToDisplay = tweetsOfFollowedUsers.reduce(
-      (a, b) => [...a, ...b],
-      []
-    );
-    return tweetsToDisplay;
-  };
+  const differenceInSeconds = difference / 1000;
+  if (differenceInSeconds < 60) {
+    const value = Math.floor(differenceInSeconds);
+    return `${value}s`;
+  }
 
-  const tweetsToDisplay = addTweetsToDisplay();
+  const differenceInMinutes = differenceInSeconds / 60;
+  if (differenceInMinutes < 60) {
+    const value = Math.floor(differenceInMinutes);
+    return `${value}m`;
+  }
 
-  // return the array
-  return tweetsToDisplay;
+  const differenceInHours = differenceInMinutes / 60;
+  if (differenceInHours < 24) {
+    const value = Math.floor(differenceInHours);
+    return `${value}h`;
+  }
+
+  const differenceInDays = differenceInHours / 24;
+  if (differenceInDays < 30) {
+    const value = Math.floor(differenceInDays);
+    return `${value}d`;
+  }
+
+  const differenceInMonths = differenceInDays / 30;
+  if (differenceInMonths < 12) {
+    const value = Math.floor(differenceInMonths);
+    return `${value}m`;
+  }
+
+  const differenceInYears = differenceInMonths / 12;
+  const value = Math.floor(differenceInYears);
+  return `${value}y`;
 };

@@ -1,6 +1,5 @@
 import { useContext, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
-import DefaultPhoto from '../../assets/defaultPhoto.png';
 import ComposeImage from '../../assets/buttons/composeimage.svg';
 import { createNewTweet, getUserData } from '../../api/database';
 import { AuthContext } from '../../api/auth';

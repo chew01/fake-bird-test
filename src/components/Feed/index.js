@@ -2,15 +2,20 @@ import styled from 'styled-components';
 import { FeedPost } from '../FeedPost';
 import { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../../api/auth';
-import { db, getUserData } from '../../api/database';
 import {
-  addDoc,
+  compareTime,
+  db,
+  getCurrentTime,
+  getUserData,
+} from '../../api/database';
+import {
   collection,
-  doc,
   onSnapshot,
+  orderBy,
   query,
   where,
 } from 'firebase/firestore';
+import { v4 as uuidv4 } from 'uuid';
 
 const FeedContainer = styled.div`
   display: flex;
@@ -25,64 +30,56 @@ export const Feed = () => {
   const uid = useContext(AuthContext);
   const [followedUsers, setFollowedUsers] = useState([]);
   const [rawTweets, setRawTweets] = useState([]);
-  const [posts, setPosts] = useState([]);
 
-  // updates followed users every time array is updated
   useEffect(() => {
     if (!uid) return;
-    const unsub = onSnapshot(doc(db, 'users', uid), (doc) => {
-      const followed = doc.data().followed.concat(uid);
-      setFollowedUsers(followed);
-    });
-
-    return () => unsub();
+    getUserData(uid)
+      .then((data) => {
+        return data.followed.concat(uid);
+      })
+      .then((result) => setFollowedUsers(result));
   }, [uid]);
 
-  // get all tweets
   useEffect(() => {
     if (followedUsers.length === 0) return;
-    const tweets = [];
+    const getTweetDetails = async (tweet) => {
+      const tweeterData = await getUserData(tweet.originUID);
+      const currentTime = await getCurrentTime();
+      const name = tweeterData.name;
+      const user = tweeterData.user;
+      const photoURL = tweeterData.photoURL;
+      const time = compareTime(currentTime, tweet.time);
+      const content = tweet.content;
+      return { name, user, photoURL, time, content };
+    };
+
+    const listAndSubmitRawTweets = (snapshot) => {
+      const promises = snapshot.docs.map((doc) => getTweetDetails(doc.data()));
+      Promise.all(promises).then((result) => setRawTweets(result));
+    };
+
     const q = query(
       collection(db, 'tweets'),
-      where('originUID', 'in', followedUsers)
+      where('originUID', 'in', followedUsers),
+      orderBy('time', 'desc')
     );
-    const unsub = onSnapshot(q, (querySnapshot) => {
-      querySnapshot.forEach((doc) => tweets.push(doc.data()));
-    });
-    setRawTweets(tweets);
 
-    return () => unsub();
+    const unsubPosts = onSnapshot(q, listAndSubmitRawTweets);
+
+    return () => {
+      unsubPosts();
+    };
   }, [followedUsers]);
-
-  // expand tweet data
-  useEffect(() => {
-    if (rawTweets.length === 0) return;
-    return Promise.all(
-      rawTweets.map(async (tweet) => {
-        const userData = await getUserData(tweet.originUID);
-        const name = userData.name;
-        const user = userData.user;
-        const photoURL = userData.photoURL;
-        const time = tweet.time;
-        const content = tweet.content;
-        return { name, user, photoURL, time, content };
-      })
-    ).then((result) => setPosts(result));
-  }, [rawTweets]);
-
-  console.log('followedusers' + followedUsers);
-  console.log('rawtweets' + rawTweets);
-  console.log('posts' + posts);
 
   return (
     <FeedContainer>
-      {posts.map((post) => (
+      {rawTweets.map((post) => (
         <FeedPost
-          key={post.user + post.content}
+          key={uuidv4()}
           photo={post.photoURL}
           name={post.name}
-          handle={post.user}
-          time="20"
+          handle={`@${post.user}`}
+          time={post.time}
           content={post.content}
         />
       ))}

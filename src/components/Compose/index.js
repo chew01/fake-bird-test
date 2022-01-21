@@ -1,9 +1,9 @@
 import { useContext, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
-import DefaultPhoto from '../../assets/defaultPhoto.png';
 import ComposeImage from '../../assets/buttons/composeimage.svg';
 import { createNewTweet, getUserData } from '../../api/database';
 import { AuthContext } from '../../api/auth';
+import { uploadImageAndReturnLink } from '../../api/storage';
 
 const ComposeContainer = styled.div`
   display: flex;
@@ -109,6 +109,15 @@ const ComposerTools = styled.div`
   box-sizing: border-box;
 `;
 
+const ComposerImageUpload = styled.input`
+  height: 0.1px;
+  width: 0.1px;
+  opacity: 0;
+  position: absolute;
+  overflow: hidden;
+  z-index: -1;
+`;
+
 const ComposerImageTool = styled.div`
   display: flex;
   flex-direction: column;
@@ -152,12 +161,34 @@ const ComposerSubmit = styled.div`
   opacity: ${(props) => (props.isEmpty ? 0.5 : null)};
 `;
 
+const ComposerImagePreviewContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  box-sizing: border-box;
+  z-index: 0;
+  border-radius: 16px;
+  margin: 8px 0px;
+`;
+
+const PreviewImage = styled.img`
+  height: 100%;
+  width: 100%;
+  z-index: -1;
+  border-radius: 16px;
+`;
+
 export const Compose = () => {
   const uid = useContext(AuthContext);
   const [isEmpty, setIsEmpty] = useState(true);
   const input = useRef(null);
   const [draft, setDraft] = useState('');
   const [photoLink, setPhotoLink] = useState();
+
+  const [upload, setUpload] = useState({
+    image: null,
+  });
+  const [preview, setPreview] = useState(null);
 
   const handleChange = (e) => {
     setDraft(e.target.textContent);
@@ -167,19 +198,53 @@ export const Compose = () => {
   };
 
   const handleSubmit = async () => {
-    await createNewTweet(uid, draft);
-    setDraft('');
-    input.current.textContent = null;
-    setIsEmpty(true);
+    if (upload.image) {
+      await uploadImageAndReturnLink(upload.image).then((link) => {
+        createNewTweet(uid, draft, link).then(() => {
+          setDraft('');
+          input.current.textContent = null;
+          setIsEmpty(true);
+          setUpload({ image: null });
+          setPreview(null);
+        });
+      });
+    } else {
+      await createNewTweet(uid, draft);
+      setDraft('');
+      input.current.textContent = null;
+      setIsEmpty(true);
+      setUpload({ image: null });
+      setPreview(null);
+    }
+  };
+
+  const handleClickUpload = () => {
+    document.getElementById('upload').click();
+  };
+
+  const handleUpload = (e) => {
+    if (e.target.files[0]) {
+      setUpload({ ...upload, image: e.target.files[0] });
+    }
   };
 
   useEffect(() => {
+    if (!uid) return;
     const getPhotoURL = async () => {
       const user = await getUserData(uid);
       setPhotoLink(user.photoURL);
     };
     getPhotoURL();
   }, [uid]);
+
+  // setting preview
+  useEffect(() => {
+    if (!upload.image) return;
+    const url = URL.createObjectURL(upload.image);
+    setPreview(url);
+
+    return () => URL.revokeObjectURL(url);
+  }, [upload.image]);
 
   return (
     <ComposeContainer>
@@ -198,9 +263,20 @@ export const Compose = () => {
               ref={input}
             ></ComposerText>
           </ComposerTextContainer>
+          {preview ? (
+            <ComposerImagePreviewContainer>
+              <PreviewImage src={preview} />
+            </ComposerImagePreviewContainer>
+          ) : null}
           <ComposerToolbar>
             <ComposerTools>
-              <ComposerImageTool>
+              <ComposerImageTool onClick={handleClickUpload}>
+                <ComposerImageUpload
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp"
+                  id="upload"
+                  onChange={handleUpload}
+                />
                 <img src={ComposeImage} alt="Upload" height="20px" />
               </ComposerImageTool>
             </ComposerTools>

@@ -7,9 +7,9 @@ import { SignUp } from './components/SignUp';
 import styled from 'styled-components';
 import { AuthContext, AuthProvider } from './api/auth';
 import { useContext } from 'react';
+import { Profile } from './views/Profile';
 
 const Default = styled.div`
-  height: 100%;
   width: 100%;
 `;
 
@@ -53,6 +53,7 @@ const Router = () => {
             }
           />
           <Route
+            exact
             path="home"
             element={
               <AuthRoute>
@@ -60,10 +61,11 @@ const Router = () => {
               </AuthRoute>
             }
           />
-          <Route path="i/flow" element={<Modal />}>
-            <Route path="login" element={<LogIn />} />
-            <Route path="signup" element={<SignUp />} />
+          <Route exact path="i/flow" element={<Modal />}>
+            <Route exact path="login" element={<LogIn />} />
+            <Route exact path="signup" element={<SignUp />} />
           </Route>
+          <Route exact path=":users" element={<Profile />} />
         </Routes>
       </AuthProvider>
       {background && (
@@ -71,6 +73,9 @@ const Router = () => {
           <Route path="i/flow" element={<Modal />}>
             <Route path="login" element={<LogIn />} />
             <Route path="signup" element={<SignUp />} />
+          </Route>
+          <Route path="settings" element={<Modal />}>
+            <Route path="profile" element={null} />
           </Route>
         </Routes>
       )}

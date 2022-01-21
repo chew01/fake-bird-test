@@ -1,7 +1,6 @@
 import styled from 'styled-components';
 import { FeedPost } from '../FeedPost';
-import { useContext, useEffect, useState } from 'react';
-import { AuthContext } from '../../api/auth';
+import { useEffect, useState } from 'react';
 import {
   compareTime,
   db,
@@ -26,22 +25,12 @@ const FeedContainer = styled.div`
   width: 100%;
 `;
 
-export const Feed = () => {
-  const uid = useContext(AuthContext);
-  const [followedUsers, setFollowedUsers] = useState([]);
+export const UserFeed = (props) => {
+  const { user } = props;
   const [rawTweets, setRawTweets] = useState([]);
 
   useEffect(() => {
-    if (!uid) return;
-    getUserData(uid)
-      .then((data) => {
-        return data.followed.concat(uid);
-      })
-      .then((result) => setFollowedUsers(result));
-  }, [uid]);
-
-  useEffect(() => {
-    if (followedUsers.length === 0) return;
+    if (!user) return;
     const getTweetDetails = async (tweet) => {
       const tweeterData = await getUserData(tweet.originUID);
       const currentTime = await getCurrentTime();
@@ -61,7 +50,7 @@ export const Feed = () => {
 
     const q = query(
       collection(db, 'tweets'),
-      where('originUID', 'in', followedUsers),
+      where('originUID', '==', user),
       orderBy('time', 'desc')
     );
 
@@ -70,7 +59,7 @@ export const Feed = () => {
     return () => {
       unsubPosts();
     };
-  }, [followedUsers]);
+  }, [user]);
 
   return (
     <FeedContainer>

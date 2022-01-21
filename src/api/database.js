@@ -20,7 +20,7 @@ const firebaseConfig = {
   appId: '1:656519934437:web:a935d69f6fa94c6c31ff0c',
 };
 
-const firebaseApp = initializeApp(firebaseConfig);
+export const firebaseApp = initializeApp(firebaseConfig);
 export const db = getFirestore(firebaseApp);
 
 export const getUserData = async (uid) => {
@@ -32,45 +32,68 @@ export const getUserData = async (uid) => {
   return { name, user, photoURL, followed };
 };
 
-export const createNewTweet = async (originUID, content) => {
-  await addDoc(collection(db, 'users', originUID, 'tweets'), {
+export const createNewTweet = async (originUID, content, imageURL = null) => {
+  await addDoc(collection(db, 'tweets'), {
     originUID,
     content,
     time: Timestamp.now(),
+    imageURL,
   });
 };
 
-const getTweetsForSpecifiedUID = async (uid) => {
-  const q = query(collection(db, 'tweets'), where('originUID', '==', uid));
+export const getCurrentTime = async () => {
+  const currentTime = Timestamp.now();
+  return currentTime;
+};
+
+export const compareTime = (time1, time2) => {
+  const difference = time1.toDate() - time2.toDate();
+
+  const differenceInSeconds = difference / 1000;
+  if (differenceInSeconds < 60) {
+    const value = Math.floor(differenceInSeconds);
+    return `${value}s`;
+  }
+
+  const differenceInMinutes = differenceInSeconds / 60;
+  if (differenceInMinutes < 60) {
+    const value = Math.floor(differenceInMinutes);
+    return `${value}m`;
+  }
+
+  const differenceInHours = differenceInMinutes / 60;
+  if (differenceInHours < 24) {
+    const value = Math.floor(differenceInHours);
+    return `${value}h`;
+  }
+
+  const differenceInDays = differenceInHours / 24;
+  if (differenceInDays < 30) {
+    const value = Math.floor(differenceInDays);
+    return `${value}d`;
+  }
+
+  const differenceInMonths = differenceInDays / 30;
+  if (differenceInMonths < 12) {
+    const value = Math.floor(differenceInMonths);
+    return `${value}m`;
+  }
+
+  const differenceInYears = differenceInMonths / 12;
+  const value = Math.floor(differenceInYears);
+  return `${value}y`;
+};
+
+export const getUserDataFromHandle = async (handle) => {
+  const q = query(collection(db, 'users'), where('user', '==', handle));
   const querySnapshot = await getDocs(q);
-  const tweetsArray = [];
-  querySnapshot.forEach((doc) => {
-    tweetsArray.push(doc.data());
-  });
-  return tweetsArray;
+  const mapped = querySnapshot.docs.map((doc) => getUserData(doc.id));
+  return mapped[0];
 };
 
-export const getTweetsOfFollowedAndSelf = async (originUID) => {
-  const userData = await getUserData(originUID);
-  // user has array of followed uids
-  const usersToDisplayTweets = userData.followed;
-  // add own uid into that array
-  usersToDisplayTweets.push(originUID);
-  // create an array for eligible tweets
-
-  const addTweetsToDisplay = async () => {
-    const tweetsOfFollowedUsers = await Promise.all(
-      usersToDisplayTweets.map((uid) => getTweetsForSpecifiedUID(uid))
-    );
-    const tweetsToDisplay = tweetsOfFollowedUsers.reduce(
-      (a, b) => [...a, ...b],
-      []
-    );
-    return tweetsToDisplay;
-  };
-
-  const tweetsToDisplay = addTweetsToDisplay();
-
-  // return the array
-  return tweetsToDisplay;
+export const getUserIDFromHandle = async (handle) => {
+  const q = query(collection(db, 'users'), where('user', '==', handle));
+  const querySnapshot = await getDocs(q);
+  const mapped = querySnapshot.docs.map((doc) => doc.id);
+  return mapped[0];
 };

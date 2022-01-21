@@ -234,8 +234,31 @@ line-height: 16px;
 color: rgb(83, 100, 113);
 `;
 
+const PostImageContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  box-sizing: border-box;
+  margin-top: 12px;
+  border: 1px solid rgb(207, 217, 222);
+  transition-duration: 0.2s;
+  z-index: 0;
+  border-radius: 16px;
+
+  &:hover {
+    background-color: rgba(29, 155, 240, 0.1);
+  }
+`;
+
+const PostImage = styled.img`
+  height: 100%;
+  width: 100%;
+  z-index: -1;
+  border-radius: 16px;
+`;
+
 export const FeedPost = (props) => {
-  const { photo, name, handle, time, content } = props;
+  const { photo, name, handle, time, content, imageURL } = props;
 
   return (
     <PostContainer>
@@ -264,6 +287,11 @@ export const FeedPost = (props) => {
                 </PostHeaderContainer>
                 <PostContent>
                   <PostContentText>{content}</PostContentText>
+                  {imageURL ? (
+                    <PostImageContainer>
+                      <PostImage src={imageURL} />
+                    </PostImageContainer>
+                  ) : null}
                   <PostToolbar>
                     <PostToolContainer>
                       <PostToolImageOverlay color="29,155,240,0.1" />

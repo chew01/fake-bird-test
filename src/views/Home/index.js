@@ -1,18 +1,17 @@
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
-import { useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Body } from '../../components/Body';
 import { Sidebar } from '../../components/Sidebar';
 import { Prompt } from '../../components/Prompt';
 import { Compose } from '../../components/Compose';
 import { Feed } from '../../components/Feed';
+import { AuthContext } from '../../api/auth';
 
 const Background = styled.div`
   display: flex;
   align-items: stretch;
   flex-direction: row;
   flex-shrink: 0;
-  height: 100%;
   width: 100%;
 `;
 
@@ -27,13 +26,14 @@ const FeedDivider = styled.div`
 `;
 
 export const Home = () => {
+  const uid = useContext(AuthContext);
   const [displayPrompt, setDisplayPrompt] = useState(true);
-  const auth = getAuth();
-  onAuthStateChanged(auth, (cred) => {
-    if (cred) {
+
+  useEffect(() => {
+    if (uid) {
       setDisplayPrompt(false);
     } else setDisplayPrompt(true);
-  });
+  }, [uid]);
 
   return (
     <Background>

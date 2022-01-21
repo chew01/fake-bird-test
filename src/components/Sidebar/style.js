@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
 export const Header = styled.header`
@@ -5,6 +6,24 @@ export const Header = styled.header`
   display: flex;
   flex-direction: column;
   align-items: flex-end;
+`;
+
+export const MenuPosition = styled.div`
+  width: 275px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  box-sizing: border-box;
+`;
+
+export const MenuWrapper = styled.div`
+  position: fixed;
+  height: 100%;
+  top: 0px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  box-sizing: border-box;
 `;
 
 export const MenuContainer = styled.div`
@@ -54,7 +73,7 @@ export const LogoLink = styled.a`
   }
 `;
 
-export const TweetButton = styled.a`
+export const TweetButton = styled(Link)`
   background-color: rgb(29, 155, 240);
   display: flex;
   flex-direction: column;

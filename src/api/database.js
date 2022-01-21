@@ -6,6 +6,9 @@ import {
   Timestamp,
   collection,
   addDoc,
+  query,
+  where,
+  getDocs,
 } from 'firebase/firestore';
 
 const firebaseConfig = {
@@ -79,4 +82,18 @@ export const compareTime = (time1, time2) => {
   const differenceInYears = differenceInMonths / 12;
   const value = Math.floor(differenceInYears);
   return `${value}y`;
+};
+
+export const getUserDataFromHandle = async (handle) => {
+  const q = query(collection(db, 'users'), where('user', '==', handle));
+  const querySnapshot = await getDocs(q);
+  const mapped = querySnapshot.docs.map((doc) => getUserData(doc.id));
+  return mapped[0];
+};
+
+export const getUserIDFromHandle = async (handle) => {
+  const q = query(collection(db, 'users'), where('user', '==', handle));
+  const querySnapshot = await getDocs(q);
+  const mapped = querySnapshot.docs.map((doc) => doc.id);
+  return mapped[0];
 };

@@ -32,12 +32,12 @@ import {
   MenuPosition,
 } from './style';
 import { Button } from '../MenuButton';
-import { useEffect, useState } from 'react';
-import { logOut } from '../../api/auth';
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { useContext, useEffect, useState } from 'react';
+import { AuthContext, logOut } from '../../api/auth';
 import { getUserData } from '../../api/database';
 
 export const Sidebar = () => {
+  const uid = useContext(AuthContext);
   const [displayUserMenu, setDisplayUserMenu] = useState(false);
   const [user, setUser] = useState({});
   const [loggedIn, setLoggedIn] = useState(false);
@@ -57,21 +57,16 @@ export const Sidebar = () => {
   };
 
   useEffect(() => {
-    const auth = getAuth();
+    if (!uid) return;
     const user = {};
-    onAuthStateChanged(auth, (cred) => {
-      if (cred) {
-        const uid = cred.uid;
-        getUserData(uid).then((obj) => {
-          user.name = obj.name;
-          user.user = obj.user;
-          user.photoURL = obj.photoURL;
-          setUser(user);
-          setLoggedIn(true);
-        });
-      } else console.log('not logged in');
+    getUserData(uid).then((obj) => {
+      user.name = obj.name;
+      user.user = obj.user;
+      user.photoURL = obj.photoURL;
+      setUser(user);
+      setLoggedIn(true);
     });
-  }, []);
+  }, [uid]);
 
   return (
     <Header>

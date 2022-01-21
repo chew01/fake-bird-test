@@ -50,7 +50,8 @@ export const Feed = () => {
       const photoURL = tweeterData.photoURL;
       const time = compareTime(currentTime, tweet.time);
       const content = tweet.content;
-      return { name, user, photoURL, time, content };
+      const imageURL = tweet.imageURL;
+      return { name, user, photoURL, time, content, imageURL };
     };
 
     const listAndSubmitRawTweets = (snapshot) => {
@@ -81,6 +82,7 @@ export const Feed = () => {
           handle={`@${post.user}`}
           time={post.time}
           content={post.content}
+          imageURL={post.imageURL}
         />
       ))}
     </FeedContainer>

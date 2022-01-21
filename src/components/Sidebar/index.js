@@ -28,6 +28,8 @@ import {
   UserToggle,
   UserMenuContainer,
   Logout,
+  MenuWrapper,
+  MenuPosition,
 } from './style';
 import { Button } from '../MenuButton';
 import { useEffect, useState } from 'react';
@@ -62,7 +64,7 @@ export const Sidebar = () => {
         const uid = cred.uid;
         getUserData(uid).then((obj) => {
           user.name = obj.name;
-          user.user = `@${obj.user}`;
+          user.user = obj.user;
           user.photoURL = obj.photoURL;
           setUser(user);
           setLoggedIn(true);
@@ -73,67 +75,79 @@ export const Sidebar = () => {
 
   return (
     <Header>
-      <MenuContainer>
-        <NavContainer>
-          <LogoContainer>
-            <LogoLink href="/">
-              <img src={Logo} alt="logo" />
-            </LogoLink>
-          </LogoContainer>
-          <ButtonContainer>
-            <nav>
-              {loggedIn ? <Button to="/home" text="Home" img={Home} /> : null}
-              <Button to="/explore" text="Explore" img={Explore} />
+      <MenuPosition>
+        <MenuWrapper>
+          <MenuContainer>
+            <NavContainer>
+              <LogoContainer>
+                <LogoLink href="/">
+                  <img src={Logo} alt="logo" />
+                </LogoLink>
+              </LogoContainer>
+              <ButtonContainer>
+                <nav>
+                  {loggedIn ? (
+                    <Button to="/home" text="Home" img={Home} />
+                  ) : null}
+                  <Button to="/explore" text="Explore" img={Explore} />
+                  {loggedIn ? (
+                    <Button
+                      to="/notifications"
+                      text="Notifications"
+                      img={Notifications}
+                    />
+                  ) : null}
+                  {loggedIn ? (
+                    <Button to="/messages" text="Messages" img={Messages} />
+                  ) : null}
+                  {loggedIn ? (
+                    <Button
+                      to="/i/bookmarks"
+                      text="Bookmarks"
+                      img={Bookmarks}
+                    />
+                  ) : null}
+                  {loggedIn ? (
+                    <Button to="/lists" text="Lists" img={Lists} />
+                  ) : null}
+                  {loggedIn ? (
+                    <Button to={`/${user.user}`} text="Profile" img={Profile} />
+                  ) : null}
+                  {loggedIn ? (
+                    <Button to="/more" text="More" img={More} />
+                  ) : null}
+                </nav>
+              </ButtonContainer>
               {loggedIn ? (
-                <Button
-                  to="/notifications"
-                  text="Notifications"
-                  img={Notifications}
-                />
+                <TweetContainer>
+                  <TweetButton to="/tweet/compose">
+                    <TweetText>Tweet</TweetText>
+                  </TweetButton>
+                </TweetContainer>
               ) : null}
-              {loggedIn ? (
-                <Button to="/messages" text="Messages" img={Messages} />
-              ) : null}
-              {loggedIn ? (
-                <Button to="/i/bookmarks" text="Bookmarks" img={Bookmarks} />
-              ) : null}
-              {loggedIn ? (
-                <Button to="/lists" text="Lists" img={Lists} />
-              ) : null}
-              {loggedIn ? (
-                <Button to="/profile" text="Profile" img={Profile} />
-              ) : null}
-              {loggedIn ? <Button to="/more" text="More" img={More} /> : null}
-            </nav>
-          </ButtonContainer>
-          {loggedIn ? (
-            <TweetContainer>
-              <TweetButton href="/compose/tweet">
-                <TweetText>Tweet</TweetText>
-              </TweetButton>
-            </TweetContainer>
-          ) : null}
-        </NavContainer>
-        {loggedIn ? (
-          <UserContainer>
-            {displayUserMenu ? (
-              <UserMenuContainer>
-                <Logout onClick={handleLogOut}>Log out user</Logout>
-              </UserMenuContainer>
+            </NavContainer>
+            {loggedIn ? (
+              <UserContainer>
+                {displayUserMenu ? (
+                  <UserMenuContainer>
+                    <Logout onClick={handleLogOut}>Log out user</Logout>
+                  </UserMenuContainer>
+                ) : null}
+                <User onClick={toggleUserMenu}>
+                  <UserPhoto src={user.photoURL} height={'40px'} />
+                  <UserText>
+                    <UserName>{user.name}</UserName>
+                    <UserHandle>@{user.user}</UserHandle>
+                  </UserText>
+                  <UserToggle>
+                    <img src={Toggle} alt="toggle" height="18.75px" />
+                  </UserToggle>
+                </User>
+              </UserContainer>
             ) : null}
-            <User onClick={toggleUserMenu}>
-              <UserPhoto src={user.photoURL} height={'40px'} />
-              <UserText>
-                <UserName>{user.name}</UserName>
-                <UserHandle>{user.user}</UserHandle>
-              </UserText>
-              <UserToggle>
-                <img src={Toggle} alt="toggle" height="18.75px" />
-              </UserToggle>
-            </User>
-          </UserContainer>
-        ) : null}
-      </MenuContainer>
+          </MenuContainer>
+        </MenuWrapper>
+      </MenuPosition>
     </Header>
   );
 };

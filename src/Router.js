@@ -9,7 +9,6 @@ import { AuthContext, AuthProvider } from './api/auth';
 import { useContext } from 'react';
 
 const Default = styled.div`
-  height: 100%;
   width: 100%;
 `;
 

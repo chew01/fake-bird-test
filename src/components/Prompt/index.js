@@ -126,10 +126,10 @@ export const Prompt = () => {
             </PromptTextLower>
           </PromptText>
           <PromptButton>
-            <PromptLogin to="i/flow/login" state={{ background: location }}>
+            <PromptLogin to="/i/flow/login" state={{ background: location }}>
               Log in
             </PromptLogin>
-            <PromptSignup to="i/flow/signup" state={{ background: location }}>
+            <PromptSignup to="/i/flow/signup" state={{ background: location }}>
               Sign up
             </PromptSignup>
           </PromptButton>

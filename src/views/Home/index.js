@@ -12,7 +12,6 @@ const Background = styled.div`
   align-items: stretch;
   flex-direction: row;
   flex-shrink: 0;
-  height: 100%;
   width: 100%;
 `;
 

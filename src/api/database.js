@@ -17,7 +17,7 @@ const firebaseConfig = {
   appId: '1:656519934437:web:a935d69f6fa94c6c31ff0c',
 };
 
-const firebaseApp = initializeApp(firebaseConfig);
+export const firebaseApp = initializeApp(firebaseConfig);
 export const db = getFirestore(firebaseApp);
 
 export const getUserData = async (uid) => {
@@ -29,11 +29,12 @@ export const getUserData = async (uid) => {
   return { name, user, photoURL, followed };
 };
 
-export const createNewTweet = async (originUID, content) => {
+export const createNewTweet = async (originUID, content, imageURL = null) => {
   await addDoc(collection(db, 'tweets'), {
     originUID,
     content,
     time: Timestamp.now(),
+    imageURL,
   });
 };
 

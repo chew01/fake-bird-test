@@ -11,7 +11,7 @@ const Bar = styled.div`
   flex-direction: column;
   align-items: stretch;
   box-sizing: border-box;
-  position: sticky;
+  position: fixed;
 `;
 
 const BarContents = styled.div`

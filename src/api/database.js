@@ -1,15 +1,5 @@
 import { initializeApp } from 'firebase/app';
-import {
-  doc,
-  getDoc,
-  getFirestore,
-  Timestamp,
-  collection,
-  addDoc,
-  query,
-  where,
-  getDocs,
-} from 'firebase/firestore';
+import { doc, getDoc, getFirestore, Timestamp, collection, addDoc, query, where, getDocs, setDoc } from 'firebase/firestore';
 
 const firebaseConfig = {
   apiKey: 'AIzaSyAAIlSejwtdFx3tUz3mE1cIETcyV0T0k1A',
@@ -28,8 +18,10 @@ export const getUserData = async (uid) => {
   const name = u.data().name;
   const user = u.data().user;
   const photoURL = u.data().photoURL;
+  const coverURL = u.data().coverURL;
   const followed = u.data().followed;
-  return { name, user, photoURL, followed };
+  const bio = u.data().bio;
+  return { name, user, photoURL, coverURL, followed, bio };
 };
 
 export const createNewTweet = async (originUID, content, imageURL = null) => {
@@ -96,4 +88,15 @@ export const getUserIDFromHandle = async (handle) => {
   const querySnapshot = await getDocs(q);
   const mapped = querySnapshot.docs.map((doc) => doc.id);
   return mapped[0];
+};
+
+export const setUserData = async (updatedData, uid) => {
+  const userRef = doc(db, 'users', uid);
+  await setDoc(userRef, updatedData, { merge: true });
+};
+
+export const getNumberOfFollowers = async (uid) => {
+  const q = query(collection(db, 'users'), where('followed', 'array-contains', uid));
+  const querySnapshot = await getDocs(q);
+  return querySnapshot.docs.length;
 };

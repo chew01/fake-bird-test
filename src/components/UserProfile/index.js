@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import TestCover from '../../assets/testcover.jpg';
 import TestPhoto from '../../assets/testphoto.jpg';
@@ -191,40 +191,39 @@ const EditProfileButtonText = styled.div`
 `;
 
 export const UserProfile = (props) => {
-  const { children } = props;
+  const { user, children, followers } = props;
+  const location = useLocation();
 
   return (
     <MainContainer>
       <MainFlowContainer>
         <ProfileContainer>
           <CoverContainer>
-            <Cover src={TestCover} alt="test" />
+            <Cover src={user.coverURL} alt="test" />
           </CoverContainer>
           <ProfileDetailsContainer>
             <TopClusterContainer>
               <PhotoContainer>
-                <Photo src={TestPhoto} alt="test" />
+                <Photo src={user.photoURL} alt="test" />
               </PhotoContainer>
               <ProfileToolbar>
-                <EditProfileButton to="/settings/profile">
+                <EditProfileButton to="/settings/profile" state={{ background: location }}>
                   <EditProfileButtonText>Edit Profile</EditProfileButtonText>
                 </EditProfileButton>
               </ProfileToolbar>
             </TopClusterContainer>
             <NameClusterContainer>
-              <ProfileName>Kinji</ProfileName>
-              <ProfileHandle>@Kinji</ProfileHandle>
+              <ProfileName>{user.name}</ProfileName>
+              <ProfileHandle>@{user.user}</ProfileHandle>
             </NameClusterContainer>
-            <DescriptionCluster>
-              YNWA | 日本語/English/华语 | Freelance JP - ENG Translator
-            </DescriptionCluster>
+            <DescriptionCluster>{user.bio}</DescriptionCluster>
             <FollowClusterContainer>
               <FollowingContainer>
-                <NumberContainer>480</NumberContainer>
+                <NumberContainer>{user.followed.length}</NumberContainer>
                 <DescriptorContainer>Following</DescriptorContainer>
               </FollowingContainer>
               <FollowedContainer>
-                <NumberContainer>196</NumberContainer>
+                <NumberContainer>{followers}</NumberContainer>
                 <DescriptorContainer>Followers</DescriptorContainer>
               </FollowedContainer>
             </FollowClusterContainer>

@@ -8,9 +8,11 @@ import styled from 'styled-components';
 import { AuthContext, AuthProvider } from './api/auth';
 import { useContext } from 'react';
 import { Profile } from './views/Profile';
+import { ProfileEdit } from './components/ProfileEdit';
 
 const Default = styled.div`
   width: 100%;
+  height: 100%;
 `;
 
 const AuthRoute = ({ children }) => {
@@ -30,55 +32,56 @@ const NoAuthRoute = ({ children }) => {
     return null;
   }
   if (user != null) {
-    return <Navigate to="home" />;
+    return <Navigate to="/home" />;
   }
   return children;
 };
 
 const Router = () => {
   let location = useLocation();
-  let background = location.state;
+  let state = location.state;
 
   return (
     <Default>
       <AuthProvider>
-        <Routes location={background || location}>
-          <Route
-            exact
-            path="/"
-            element={
-              <NoAuthRoute>
-                <Main />
-              </NoAuthRoute>
-            }
-          />
-          <Route
-            exact
-            path="home"
-            element={
-              <AuthRoute>
-                <Home />
-              </AuthRoute>
-            }
-          />
-          <Route exact path="i/flow" element={<Modal />}>
-            <Route exact path="login" element={<LogIn />} />
-            <Route exact path="signup" element={<SignUp />} />
+        <Routes location={(state ? state.background : null) || location}>
+          <Route path="/">
+            <Route
+              index
+              element={
+                <NoAuthRoute>
+                  <Main />
+                </NoAuthRoute>
+              }
+            />
+            <Route
+              path="/home"
+              element={
+                <AuthRoute>
+                  <Home />
+                </AuthRoute>
+              }
+            />
+            <Route path="/i/flow" element={<Modal />}>
+              <Route path="login" element={<LogIn />} />
+              <Route path="signup" element={<SignUp />} />
+            </Route>
+            <Route path="/:users" element={<Profile />} />
           </Route>
-          <Route exact path=":users" element={<Profile />} />
         </Routes>
+
+        {(state ? state.background : null) && (
+          <Routes>
+            <Route path="/i/flow" element={<Modal />}>
+              <Route path="login" element={<LogIn />} />
+              <Route path="signup" element={<SignUp />} />
+            </Route>
+            <Route path="/settings" element={<Modal />}>
+              <Route path="profile" element={<ProfileEdit />} />
+            </Route>
+          </Routes>
+        )}
       </AuthProvider>
-      {background && (
-        <Routes>
-          <Route path="i/flow" element={<Modal />}>
-            <Route path="login" element={<LogIn />} />
-            <Route path="signup" element={<SignUp />} />
-          </Route>
-          <Route path="settings" element={<Modal />}>
-            <Route path="profile" element={null} />
-          </Route>
-        </Routes>
-      )}
     </Default>
   );
 };

@@ -1,11 +1,13 @@
 import styled from 'styled-components';
 import { Sidebar } from '../../components/Sidebar';
 import { Body } from '../../components/Body';
-import { useEffect, useState } from 'react';
-import { getUserDataFromHandle, getUserIDFromHandle } from '../../api/database';
+import { useContext, useEffect, useState } from 'react';
+import { getNumberOfFollowers, getUserDataFromHandle, getUserIDFromHandle } from '../../api/database';
 import { useParams } from 'react-router-dom';
 import { UserProfile } from '../../components/UserProfile';
 import { UserFeed } from '../../components/UserFeed';
+import { Prompt } from '../../components/Prompt';
+import { AuthContext } from '../../api/auth';
 
 const Background = styled.div`
   display: flex;
@@ -16,29 +18,38 @@ const Background = styled.div`
 `;
 
 export const Profile = () => {
+  const uid = useContext(AuthContext);
   const [user, setUser] = useState({});
   const params = useParams();
   const profileUser = params.users;
-  const [uid, setUID] = useState();
+  const [profileUID, setProfileUID] = useState();
+  const [displayPrompt, setDisplayPrompt] = useState(true);
+  const [numberOfFollowers, setNumberOfFollowers] = useState(0);
+
+  useEffect(() => {
+    if (uid) {
+      setDisplayPrompt(false);
+    } else setDisplayPrompt(true);
+  }, [uid]);
 
   useEffect(() => {
     if (!profileUser) return;
     getUserDataFromHandle(profileUser).then((user) => setUser(user));
-  }, [profileUser]);
-
-  useEffect(() => {
-    if (!profileUser) return;
-    getUserIDFromHandle(profileUser).then((uid) => setUID(uid));
+    getUserIDFromHandle(profileUser).then((uid) => {
+      setProfileUID(uid);
+      getNumberOfFollowers(uid).then((number) => setNumberOfFollowers(number));
+    });
   }, [profileUser]);
 
   return (
     <Background>
       <Sidebar />
       <Body type={user.name}>
-        <UserProfile>
-          <UserFeed user={uid} />
+        <UserProfile user={user} followers={numberOfFollowers}>
+          <UserFeed user={profileUID} />
         </UserProfile>
       </Body>
+      {displayPrompt ? <Prompt /> : null}
     </Background>
   );
 };

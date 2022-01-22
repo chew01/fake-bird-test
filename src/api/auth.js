@@ -1,14 +1,9 @@
-import {
-  getAuth,
-  createUserWithEmailAndPassword,
-  signOut,
-  signInWithEmailAndPassword,
-  onAuthStateChanged,
-} from 'firebase/auth';
+import { getAuth, createUserWithEmailAndPassword, signOut, signInWithEmailAndPassword, onAuthStateChanged } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
 import { createContext, useEffect, useState } from 'react';
 import { db } from './database';
 import DefaultPhoto from '../assets/defaultPhoto.png';
+import DefaultCover from '../assets/defaultCover.png';
 
 export const signUp = async (name, user, email, password) => {
   try {
@@ -20,6 +15,8 @@ export const signUp = async (name, user, email, password) => {
       name,
       user,
       photoURL: DefaultPhoto,
+      coverURL: DefaultCover,
+      bio: '',
       followed: [],
     });
   } catch (error) {
@@ -62,7 +59,5 @@ export const AuthProvider = ({ children }) => {
     });
   }, []);
 
-  return (
-    <AuthContext.Provider value={currentUser}>{children}</AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={currentUser}>{children}</AuthContext.Provider>;
 };

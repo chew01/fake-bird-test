@@ -31,3 +31,4 @@ At this point in time, I was still writing my own CSS instead of using templates
 ## Planned features (before I move on to other things)
 
 - **Follow functionality** (Users should be able to follow/unfollow other users)
+- I may eventually return to try some other things in the future.

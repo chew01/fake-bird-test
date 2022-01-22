@@ -9,8 +9,7 @@ const PromptContainer = styled.div`
   position: fixed;
   bottom: 0px;
   background-color: rgb(29, 155, 240);
-  box-shadow: rgb(101 119 134 / 20%) 0px 0px 15px,
-    rgb(101 119 134 / 15%) 0px 0px 3px 1px;
+  box-shadow: rgb(101 119 134 / 20%) 0px 0px 15px, rgb(101 119 134 / 15%) 0px 0px 3px 1px;
 `;
 
 const PromptInner = styled.div`
@@ -121,9 +120,7 @@ export const Prompt = () => {
         <PromptContent>
           <PromptText>
             <PromptTextUpper>Don't miss what's happening</PromptTextUpper>
-            <PromptTextLower>
-              People on Twitter are the first to know.
-            </PromptTextLower>
+            <PromptTextLower>People on Twitter are the first to know.</PromptTextLower>
           </PromptText>
           <PromptButton>
             <PromptLogin to="/i/flow/login" state={{ background: location }}>

@@ -47,7 +47,6 @@ const BodyLeftTitle = styled.div`
   justify-content: center;
   position: sticky;
   top: -0.5px;
-  z-index: 2;
   height: 53px;
   padding: 0px 16px;
   font-family: 'TwitterChirp';

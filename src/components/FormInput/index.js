@@ -38,18 +38,13 @@ const Input = styled.input`
 `;
 
 export const FormInput = (props) => {
-  const { title, type, onChange, autoComplete } = props;
+  const { title, type, onChange, autoComplete, defaultValue } = props;
 
   return (
     <Box>
       <Label>
         <InputTitle>{title}</InputTitle>
-        <Input
-          required
-          type={type}
-          onChange={onChange}
-          autocomplete={autoComplete}
-        />
+        <Input required type={type} onChange={onChange} autocomplete={autoComplete} defaultValue={defaultValue} />
       </Label>
     </Box>
   );

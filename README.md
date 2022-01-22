@@ -27,8 +27,9 @@ At this point in time, I was still writing my own CSS instead of using templates
   - Image upload (Users should be able to include an image in their tweets)
 - **Feed** (Feeds should be populated with posts based on certain criteria, such as tweets by followed users)
 - **User Profile** (Users should be able to edit their name and display photo)
-
-## Planned features (before I move on to other things)
-
 - **Follow functionality** (Users should be able to follow/unfollow other users)
+
+## Planned features (if I do come back to test new skills out)
+
+- App needs to be smoother (listeners to be added).
 - I may eventually return to try some other things in the future.

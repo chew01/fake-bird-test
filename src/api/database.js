@@ -100,3 +100,22 @@ export const getNumberOfFollowers = async (uid) => {
   const querySnapshot = await getDocs(q);
   return querySnapshot.docs.length;
 };
+
+export const checkIfCurrentUserFollowsViewedProfile = async (currentUID, viewedUID) => {
+  const currentUserData = await getUserData(currentUID);
+  return currentUserData.followed.includes(viewedUID);
+};
+
+export const addViewedUIDIntoCurrentUserFollowedList = async (currentUID, viewedUID) => {
+  const userData = await getUserData(currentUID);
+  const followed = userData.followed.concat(viewedUID);
+  await setDoc(doc(db, 'users', currentUID), { followed }, { merge: true });
+};
+
+export const removeViewedUIDIntoCurrentUserFollowedList = async (currentUID, viewedUID) => {
+  const userData = await getUserData(currentUID);
+  const followed = userData.followed;
+  const indexOfViewedUID = followed.indexOf(viewedUID);
+  followed.splice(indexOfViewedUID, 1);
+  await setDoc(doc(db, 'users', currentUID), { followed }, { merge: true });
+};

@@ -1,7 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
-import TestCover from '../../assets/testcover.jpg';
-import TestPhoto from '../../assets/testphoto.jpg';
 
 const MainContainer = styled.div`
   display: flex;
@@ -190,8 +188,42 @@ const EditProfileButtonText = styled.div`
   color: rgb(15, 20, 25);
 `;
 
+const FollowButton = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: stretch;
+  box-sizing: border-box;
+  margin-bottom: 12px;
+  min-height: 36px;
+  min-width: 36px;
+  padding: 0px 16px;
+  border: 1px solid rgb(207, 217, 222);
+  border-radius: 9999px;
+  transition-duration: 0.2s;
+  cursor: pointer;
+
+  &:hover {
+    background-color: rgba(15, 20, 25, 0.1);
+  }
+`;
+
+const FollowButtonText = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+  font-family: 'TwitterChirp';
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 20px;
+  text-align: center;
+  color: rgb(15, 20, 25);
+`;
+
 export const UserProfile = (props) => {
-  const { user, children, followers } = props;
+  const { user, children, followers, isCurrentUser, isFollowedByCurrentUser, handleFollow, handleUnfollow } = props;
   const location = useLocation();
 
   return (
@@ -207,9 +239,19 @@ export const UserProfile = (props) => {
                 <Photo src={user.photoURL} alt="test" />
               </PhotoContainer>
               <ProfileToolbar>
-                <EditProfileButton to="/settings/profile" state={{ background: location }}>
-                  <EditProfileButtonText>Edit Profile</EditProfileButtonText>
-                </EditProfileButton>
+                {isCurrentUser ? (
+                  <EditProfileButton to="/settings/profile" state={{ background: location }}>
+                    <EditProfileButtonText>Edit Profile</EditProfileButtonText>
+                  </EditProfileButton>
+                ) : isFollowedByCurrentUser ? (
+                  <FollowButton onClick={handleUnfollow}>
+                    <FollowButtonText>Unfollow</FollowButtonText>
+                  </FollowButton>
+                ) : (
+                  <FollowButton>
+                    <FollowButtonText onClick={handleFollow}>Follow</FollowButtonText>
+                  </FollowButton>
+                )}
               </ProfileToolbar>
             </TopClusterContainer>
             <NameClusterContainer>
@@ -219,7 +261,7 @@ export const UserProfile = (props) => {
             <DescriptionCluster>{user.bio}</DescriptionCluster>
             <FollowClusterContainer>
               <FollowingContainer>
-                <NumberContainer>{user.followed.length}</NumberContainer>
+                <NumberContainer>{user.followed ? user.followed.length : 0}</NumberContainer>
                 <DescriptorContainer>Following</DescriptorContainer>
               </FollowingContainer>
               <FollowedContainer>

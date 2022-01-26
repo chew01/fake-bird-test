@@ -33,3 +33,10 @@ At this point in time, I was still writing my own CSS instead of using templates
 
 - App needs to be smoother (listeners to be added).
 - I may eventually return to try some other things in the future.
+
+## Lessons learnt
+
+- In retrospect I should have learnt more about semantic html tags and used them more instead of div spam!
+- I really overused Styled Components here. Instead of styling each div, I should have made templates.
+- I was little confused about svgs, but I should've used them inline instead of img tags.
+- Could've used things like forms, input placeholders instead of trying to create them myself!
